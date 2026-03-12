@@ -28,7 +28,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'set DOCKER_BUILDKIT=0 && "%DOCKER_EXE%" build --no-cache -t %IMAGE_NAME% .'
+                bat 'set "DOCKER_BUILDKIT=0" && "%DOCKER_EXE%" build --no-cache -t %IMAGE_NAME% .'
             }
         }
 
