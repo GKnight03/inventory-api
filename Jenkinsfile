@@ -6,6 +6,7 @@ pipeline {
         CONTAINER_NAME = 'inventory-container'
         PYTHON_EXE = 'C:\\Program Files\\Python312\\python.exe'
         DOCKER_EXE = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
+        NEWMAN_EXE = 'C:\\Users\\fires\\AppData\\Roaming\\npm\\newman.cmd'
     }
 
     stages {
@@ -42,7 +43,7 @@ pipeline {
 
         stage('Run Newman Tests') {
             steps {
-                bat 'newman run tests/postman_collection.json -e tests/postman_environment.json'
+                bat '"%NEWMAN_EXE%" run tests/postman_collection.json -e tests/postman_environment.json'
             }
         }
 
