@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/GKNIGHT03/YOUR_REPOSITORY.git'
+                git 'https://github.com/GKnight03/inventory-api.git'
             }
         }
 
