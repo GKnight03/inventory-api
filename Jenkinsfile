@@ -8,6 +8,8 @@ pipeline {
         DOCKER_EXE = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
         NODE_EXE = 'C:\\Program Files\\nodejs\\node.exe'
         NEWMAN_EXE = 'C:\\Users\\fires\\AppData\\Roaming\\npm\\node_modules\\newman\\bin\\newman.js'
+        POWERSHELL_EXE = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
+        MONGO_URI = 'mongodb://host.docker.internal:27017'
     }
 
     stages {
@@ -26,13 +28,17 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat '"%DOCKER_EXE%" build -t %IMAGE_NAME% .'
+                bat 'set DOCKER_BUILDKIT=0 && "%DOCKER_EXE%" build --no-cache -t %IMAGE_NAME% .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% %IMAGE_NAME%'
+                bat '@"%DOCKER_EXE%" rm -f %CONTAINER_NAME% 2>nul || ver > nul'
+                bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% -e MONGO_URI=%MONGO_URI% %IMAGE_NAME%'
+                bat 'timeout /t 10 >nul'
+                bat '"%DOCKER_EXE%" ps -a'
+                bat '"%DOCKER_EXE%" logs %CONTAINER_NAME%'
             }
         }
 
@@ -50,9 +56,7 @@ pipeline {
 
         stage('Create Zip File') {
             steps {
-                bat '''
-                powershell -Command "$date = Get-Date -Format yyyy-MM-dd-HH-mm-ss; Compress-Archive -Path app,tests,data,Dockerfile,requirements.txt,Jenkinsfile,generate_readme.py,README.txt -DestinationPath complete-$date.zip"
-                '''
+                bat '"%POWERSHELL_EXE%" -Command "$date = Get-Date -Format yyyy-MM-dd-HH-mm-ss; Compress-Archive -Path app,tests,data,Dockerfile,requirements.txt,Jenkinsfile,generate_readme.py,README.txt -DestinationPath complete-$date.zip"'
             }
         }
     }
