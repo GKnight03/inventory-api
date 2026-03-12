@@ -4,19 +4,20 @@ pipeline {
     environment {
         IMAGE_NAME = 'inventory-api'
         CONTAINER_NAME = 'inventory-container'
+        PYTHON_EXE = 'C:\\Program Files\\Python312\\python.exe'
     }
 
     stages {
 
         stage('Install Python Dependencies') {
             steps {
-                bat 'python -m pip install -r requirements.txt'
+                bat '"%PYTHON_EXE%" -m pip install -r requirements.txt'
             }
         }
 
         stage('Generate README') {
             steps {
-                bat 'python generate_readme.py'
+                bat '"%PYTHON_EXE%" generate_readme.py'
             }
         }
 
@@ -34,7 +35,7 @@ pipeline {
 
         stage('Run Pytest Tests') {
             steps {
-                bat 'python -m pytest tests/unit_test_api.py'
+                bat '"%PYTHON_EXE%" -m pytest tests/unit_test_api.py'
             }
         }
 
