@@ -3,5 +3,6 @@ uvicorn
 pymongo
 pydantic
 requests
-pandas
+pytest
+httpx
 python-multipart

@@ -1,0 +1,88 @@
+from fastapi import FastAPI, HTTPException, Query
+from app.database import products_collection
+from app.models import Product
+from app.schemas import product_serializer, products_serializer
+from app.currency import convert_usd_to_eur
+
+app = FastAPI(title="Inventory API", version="1.0")
+
+
+@app.get("/")
+def home():
+    return {"message": "Inventory API is running"}
+
+
+@app.get("/getSingleProduct")
+def get_single_product(id: int = Query(..., gt=0)):
+    product = products_collection.find_one({"ProductID": id})
+    if product:
+        return product_serializer(product)
+    raise HTTPException(status_code=404, detail="Product not found")
+
+
+@app.get("/getAll")
+def get_all_products():
+    products = products_collection.find()
+    return products_serializer(products)
+
+
+@app.post("/addNew")
+def add_new_product(product: Product):
+    existing = products_collection.find_one({"ProductID": product.ProductID})
+    if existing:
+        raise HTTPException(status_code=400, detail="ProductID already exists")
+
+    products_collection.insert_one(product.dict())
+    return {
+        "message": "Product added successfully",
+        "product": product.dict()
+    }
+
+
+@app.delete("/deleteOne")
+def delete_one_product(id: int = Query(..., gt=0)):
+    result = products_collection.delete_one({"ProductID": id})
+    if result.deleted_count == 1:
+        return {"message": f"Product with ID {id} deleted successfully"}
+    raise HTTPException(status_code=404, detail="Product not found")
+
+
+@app.get("/startsWith")
+def starts_with(letter: str = Query(..., min_length=1, max_length=1)):
+    regex_pattern = f"^{letter}"
+    products = products_collection.find({"Name": {"$regex": regex_pattern, "$options": "i"}})
+    return products_serializer(products)
+
+
+@app.get("/paginate")
+def paginate_products(
+    start: int = Query(..., gt=0),
+    end: int = Query(..., gt=0)
+):
+    if start > end:
+        raise HTTPException(status_code=400, detail="Start ID must be less than or equal to end ID")
+
+    products = products_collection.find(
+        {"ProductID": {"$gte": start, "$lte": end}}
+    ).sort("ProductID", 1).limit(10)
+
+    return products_serializer(products)
+
+
+@app.get("/convert")
+def convert_price(id: int = Query(..., gt=0)):
+    product = products_collection.find_one({"ProductID": id})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    try:
+        usd_price = product["UnitPrice"]
+        eur_price = convert_usd_to_eur(usd_price)
+        return {
+            "ProductID": product["ProductID"],
+            "Name": product["Name"],
+            "PriceUSD": usd_price,
+            "PriceEUR": eur_price
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Currency conversion failed: {str(e)}")

@@ -1,0 +1,142 @@
+{
+  "info": {
+    "name": "Inventory API Tests",
+    "_postman_id": "12345678-abcd-efgh-ijkl-123456789000",
+    "description": "Postman tests for Inventory API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Home",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/",
+          "host": ["{{base_url}}"],
+          "path": [""]
+        }
+      }
+    },
+    {
+      "name": "Get Single Product",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/getSingleProduct?id=1",
+          "host": ["{{base_url}}"],
+          "path": ["getSingleProduct"],
+          "query": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get All",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/getAll",
+          "host": ["{{base_url}}"],
+          "path": ["getAll"]
+        }
+      }
+    },
+    {
+      "name": "Add New Product",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"ProductID\": 20,\n  \"Name\": \"SSD\",\n  \"UnitPrice\": 89.99,\n  \"StockQuantity\": 7,\n  \"Description\": \"1TB SSD\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/addNew",
+          "host": ["{{base_url}}"],
+          "path": ["addNew"]
+        }
+      }
+    },
+    {
+      "name": "Delete One",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "{{base_url}}/deleteOne?id=20",
+          "host": ["{{base_url}}"],
+          "path": ["deleteOne"],
+          "query": [
+            {
+              "key": "id",
+              "value": "20"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Starts With",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/startsWith?letter=S",
+          "host": ["{{base_url}}"],
+          "path": ["startsWith"],
+          "query": [
+            {
+              "key": "letter",
+              "value": "S"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Paginate",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/paginate?start=1&end=10",
+          "host": ["{{base_url}}"],
+          "path": ["paginate"],
+          "query": [
+            {
+              "key": "start",
+              "value": "1"
+            },
+            {
+              "key": "end",
+              "value": "10"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Convert",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/convert?id=1",
+          "host": ["{{base_url}}"],
+          "path": ["convert"],
+          "query": [
+            {
+              "key": "id",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
