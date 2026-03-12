@@ -4,18 +4,11 @@ pipeline {
     environment {
         IMAGE_NAME = 'inventory-api'
         CONTAINER_NAME = 'inventory-container'
-        ZIP_NAME = "complete-%BUILD_ID%.zip"
     }
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/GKnight03/inventory-api.git'
-            }
-        }
-
-        stage('Install Dependencies') {
+        stage('Install Python Dependencies') {
             steps {
                 bat 'pip install -r requirements.txt'
             }
@@ -39,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Run Python Unit Tests') {
+        stage('Run Pytest Tests') {
             steps {
                 bat 'pytest tests/unit_test_api.py'
             }
@@ -51,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Create Final Zip') {
+        stage('Create Zip File') {
             steps {
                 bat '''
                 powershell -Command "$date = Get-Date -Format yyyy-MM-dd-HH-mm-ss; Compress-Archive -Path app,tests,data,Dockerfile,requirements.txt,Jenkinsfile,generate_readme.py,README.txt -DestinationPath complete-$date.zip"
@@ -62,8 +55,8 @@ pipeline {
 
     post {
         always {
-            bat 'docker stop %CONTAINER_NAME% || exit 0'
-            bat 'docker rm %CONTAINER_NAME% || exit 0'
+            bat '@docker stop %CONTAINER_NAME% 2>nul || ver > nul'
+            bat '@docker rm %CONTAINER_NAME% 2>nul || ver > nul'
         }
     }
 }
