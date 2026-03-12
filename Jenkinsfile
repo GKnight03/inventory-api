@@ -10,7 +10,7 @@ pipeline {
 
         stage('Install Python Dependencies') {
             steps {
-                bat 'pip install -r requirements.txt'
+                bat 'python -m pip install -r requirements.txt'
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
 
         stage('Run Pytest Tests') {
             steps {
-                bat 'pytest tests/unit_test_api.py'
+                bat 'python -m pytest tests/unit_test_api.py'
             }
         }
 
