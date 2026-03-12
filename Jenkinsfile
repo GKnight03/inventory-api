@@ -9,7 +9,6 @@ pipeline {
         NODE_EXE = 'C:\\Program Files\\nodejs\\node.exe'
         NEWMAN_EXE = 'C:\\Users\\fires\\AppData\\Roaming\\npm\\node_modules\\newman\\bin\\newman.js'
         POWERSHELL_EXE = 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'
-        MONGO_URI = 'mongodb://host.docker.internal:27017'
     }
 
     stages {
@@ -34,13 +33,13 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-            bat '@"%DOCKER_EXE%" rm -f %CONTAINER_NAME% 2>nul || ver > nul'
-            bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% -e MONGO_URI=%MONGO_URI% %IMAGE_NAME%'
-            bat '"%POWERSHELL_EXE%" -Command "Start-Sleep -Seconds 10"'
-            bat '"%DOCKER_EXE%" ps -a'
-            bat '"%DOCKER_EXE%" logs %CONTAINER_NAME%'
-    }
-}
+                bat '@"%DOCKER_EXE%" rm -f %CONTAINER_NAME% 2>nul || ver > nul'
+                bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% -e MONGO_URI=mongodb://host.docker.internal:27017 %IMAGE_NAME%'
+                bat '"%POWERSHELL_EXE%" -Command "Start-Sleep -Seconds 10"'
+                bat '"%DOCKER_EXE%" ps -a'
+                bat '"%DOCKER_EXE%" logs %CONTAINER_NAME%'
+            }
+        }
 
         stage('Run Pytest Tests') {
             steps {
