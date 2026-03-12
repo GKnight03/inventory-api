@@ -5,6 +5,7 @@ pipeline {
         IMAGE_NAME = 'inventory-api'
         CONTAINER_NAME = 'inventory-container'
         PYTHON_EXE = 'C:\\Program Files\\Python312\\python.exe'
+        DOCKER_EXE = 'C:\\Program Files\\Docker\\Docker\\resources\\bin\\docker.exe'
     }
 
     stages {
@@ -23,13 +24,13 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                bat '"%DOCKER_EXE%" build -t %IMAGE_NAME% .'
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                bat 'docker run -d -p 8000:8000 --name %CONTAINER_NAME% %IMAGE_NAME%'
+                bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% %IMAGE_NAME%'
             }
         }
 
@@ -56,8 +57,8 @@ pipeline {
 
     post {
         always {
-            bat '@docker stop %CONTAINER_NAME% 2>nul || ver > nul'
-            bat '@docker rm %CONTAINER_NAME% 2>nul || ver > nul'
+            bat '@"%DOCKER_EXE%" stop %CONTAINER_NAME% 2>nul || ver > nul'
+            bat '@"%DOCKER_EXE%" rm %CONTAINER_NAME% 2>nul || ver > nul'
         }
     }
 }
