@@ -32,10 +32,11 @@ def add_new_product(product: Product):
     if existing:
         raise HTTPException(status_code=400, detail="ProductID already exists")
 
-    products_collection.insert_one(product.dict())
+    product_data = product.model_dump()
+    products_collection.insert_one(product_data)
     return {
         "message": "Product added successfully",
-        "product": product.dict()
+        "product": product_data
     }
 
 
