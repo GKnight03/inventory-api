@@ -34,13 +34,13 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                bat '@"%DOCKER_EXE%" rm -f %CONTAINER_NAME% 2>nul || ver > nul'
-                bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% -e MONGO_URI=%MONGO_URI% %IMAGE_NAME%'
-                bat 'timeout /t 10 >nul'
-                bat '"%DOCKER_EXE%" ps -a'
-                bat '"%DOCKER_EXE%" logs %CONTAINER_NAME%'
-            }
-        }
+            bat '@"%DOCKER_EXE%" rm -f %CONTAINER_NAME% 2>nul || ver > nul'
+            bat '"%DOCKER_EXE%" run -d -p 8000:8000 --name %CONTAINER_NAME% -e MONGO_URI=%MONGO_URI% %IMAGE_NAME%'
+            bat '"%POWERSHELL_EXE%" -Command "Start-Sleep -Seconds 10"'
+            bat '"%DOCKER_EXE%" ps -a'
+            bat '"%DOCKER_EXE%" logs %CONTAINER_NAME%'
+    }
+}
 
         stage('Run Pytest Tests') {
             steps {
