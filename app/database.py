@@ -1,6 +1,7 @@
 from pymongo import MongoClient
+import os
 
-MONGO_URI = "mongodb://localhost:27017"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = "inventorydb"
 COLLECTION_NAME = "products"
 
