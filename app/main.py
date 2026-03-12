@@ -34,9 +34,16 @@ def add_new_product(product: Product):
 
     product_data = product.model_dump()
     products_collection.insert_one(product_data)
+
     return {
         "message": "Product added successfully",
-        "product": product_data
+        "product": {
+            "ProductID": product_data["ProductID"],
+            "Name": product_data["Name"],
+            "UnitPrice": product_data["UnitPrice"],
+            "StockQuantity": product_data["StockQuantity"],
+            "Description": product_data["Description"]
+        }
     }
 
 
