@@ -1,21 +1,19 @@
 import requests
-import logging
 
 def convert_usd_to_eur(usd_amount: float) -> float:
-    url = "https://api.exchangerate.host/convert"
+    url = "https://api.frankfurter.dev/v1/latest"
     params = {
+        "amount": usd_amount,
         "from": "USD",
-        "to": "EUR",
-        "amount": usd_amount
+        "to": "EUR"
     }
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        if "result" not in data or data["result"] is None:
-            logging.error(f"Exchange API response missing result: {data}")
-            raise ValueError("Could not retrieve exchange rate conversion.")
-        return round(float(data["result"]), 2)
-    except Exception as e:
-        logging.error(f"Currency conversion failed: {e}")
-        raise ValueError(f"Currency conversion failed: {e}")
+
+    response = requests.get(url, params=params, timeout=10)
+    response.raise_for_status()
+
+    data = response.json()
+
+    if "rates" not in data or "EUR" not in data["rates"]:
+        raise Exception(f"Unexpected API response: {data}")
+
+    return round(data["rates"]["EUR"], 2)
