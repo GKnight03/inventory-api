@@ -84,8 +84,18 @@ def convert_price(id: int = Query(..., gt=0)):
         raise HTTPException(status_code=404, detail="Product not found")
 
     try:
-        usd_price = product["UnitPrice"]
+        # Diagnostic logging
+        print(f"[DEBUG] Product fetched: {product}")
+        usd_price = product.get("UnitPrice")
+        if usd_price is None:
+            print(f"[ERROR] UnitPrice missing for ProductID {id}")
+            raise HTTPException(status_code=500, detail="UnitPrice missing in product data.")
+        if not isinstance(usd_price, (int, float)):
+            print(f"[ERROR] UnitPrice not a number for ProductID {id}: {usd_price}")
+            raise HTTPException(status_code=500, detail="UnitPrice is not a valid number.")
+        print(f"[DEBUG] USD Price: {usd_price}")
         eur_price = convert_usd_to_eur(usd_price)
+        print(f"[DEBUG] EUR Price: {eur_price}")
         return {
             "ProductID": product["ProductID"],
             "Name": product["Name"],
@@ -93,4 +103,5 @@ def convert_price(id: int = Query(..., gt=0)):
             "PriceEUR": eur_price
         }
     except Exception as e:
+        print(f"[EXCEPTION] {str(e)}")
         raise HTTPException(status_code=500, detail=f"Currency conversion failed: {str(e)}")
