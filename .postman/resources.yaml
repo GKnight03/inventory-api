@@ -1,0 +1,12 @@
+# Use this workspace to collaborate
+workspace:
+  id: fe520fbc-e6ca-4470-8908-b840e770456d
+
+localResources:
+  collections:
+    - ..\tests\postman_collection.json
+  environments:
+    - ..\tests\postman_environment.json
+cloudResources:
+  collections:
+    ..\postman\collections\Inventory API Tests: ee1f8173-8911-419c-91da-6350d473900a
