@@ -1,10 +1,10 @@
 $kind: http-request
-url: '{{base_url}}/'
+name: Home
+url: "{{base_url}}/"
 method: GET
 order: 1000
 scripts:
   - type: afterResponse
-    language: text/javascript
     code: |-
       pm.test("Status code is 200", function () {
           pm.response.to.have.status(200);
@@ -13,3 +13,4 @@ scripts:
       pm.test("Response is JSON", function () {
           pm.response.to.be.json;
       });
+    language: text/javascript

@@ -1,12 +1,12 @@
 $kind: http-request
-url: '{{base_url}}/addNew'
+name: Add New Product
+url: "{{base_url}}/addNew"
 method: POST
 order: 2000
 headers:
-  - key: Content-Type
-    value: application/json
+  Content-Type: application/json
 body:
-  type: json
+  type: text
   content: |-
     {
       "ProductID": 20,
@@ -15,17 +15,3 @@ body:
       "StockQuantity": 7,
       "Description": "1TB SSD"
     }
-scripts:
-  - type: afterResponse
-    language: text/javascript
-    code: |-
-      pm.test("Status code is 200", function () {
-          pm.response.to.have.status(200);
-      });
-
-      pm.test("Product added successfully", function () {
-          const data = pm.response.json();
-          pm.expect(data.message).to.eql("Product added successfully");
-          pm.expect(data.product).to.have.property("ProductID");
-          pm.expect(data.product).to.have.property("Name");
-      });

@@ -49,6 +49,15 @@ pipeline {
 
         stage('Run Newman Tests') {
             steps {
+                // Debug: confirm Jenkins workspace and test files are visible
+                bat 'echo WORKSPACE=%WORKSPACE%'
+                bat 'cd'
+                bat 'dir'
+                bat 'dir tests'
+                bat 'type tests\\postman_environment.json | findstr /I /C:"base_url" || echo "postman_environment.json missing or not readable"'
+                bat 'findstr /I /C:"pm.test" tests\\postman_collection.json || echo "no pm.test assertions found in collection"'
+
+                // Run Newman
                 bat '"%NODE_EXE%" "%NEWMAN_EXE%" run tests/postman_collection.json -e tests/postman_environment.json'
             }
         }
