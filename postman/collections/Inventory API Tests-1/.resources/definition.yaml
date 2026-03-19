@@ -1,0 +1,5 @@
+$kind: collection
+name: Inventory API Tests
+description: Postman tests for Inventory API
+variables:
+  base_url: http://localhost:8000
