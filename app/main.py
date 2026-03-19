@@ -3,6 +3,10 @@ from app.database import products_collection
 from app.models import Product
 from app.schemas import product_serializer, products_serializer
 from app.currency import convert_usd_to_eur
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger("inventory-api")
 
 app = FastAPI(title="Inventory API", version="1.0")
 
@@ -81,21 +85,21 @@ def paginate_products(
 def convert_price(id: int = Query(..., gt=0)):
     product = products_collection.find_one({"ProductID": id})
     if not product:
+        logger.error(f"Product not found for ProductID {id}")
         raise HTTPException(status_code=404, detail="Product not found")
 
     try:
-        # Diagnostic logging
-        print(f"[DEBUG] Product fetched: {product}")
+        logger.debug(f"Product fetched: {product}")
         usd_price = product.get("UnitPrice")
         if usd_price is None:
-            print(f"[ERROR] UnitPrice missing for ProductID {id}")
+            logger.error(f"UnitPrice missing for ProductID {id}")
             raise HTTPException(status_code=500, detail="UnitPrice missing in product data.")
         if not isinstance(usd_price, (int, float)):
-            print(f"[ERROR] UnitPrice not a number for ProductID {id}: {usd_price}")
+            logger.error(f"UnitPrice not a number for ProductID {id}: {usd_price}")
             raise HTTPException(status_code=500, detail="UnitPrice is not a valid number.")
-        print(f"[DEBUG] USD Price: {usd_price}")
+        logger.debug(f"USD Price: {usd_price}")
         eur_price = convert_usd_to_eur(usd_price)
-        print(f"[DEBUG] EUR Price: {eur_price}")
+        logger.debug(f"EUR Price: {eur_price}")
         return {
             "ProductID": product["ProductID"],
             "Name": product["Name"],
@@ -103,5 +107,5 @@ def convert_price(id: int = Query(..., gt=0)):
             "PriceEUR": eur_price
         }
     except Exception as e:
-        print(f"[EXCEPTION] {str(e)}")
+        logger.exception(f"Currency conversion failed for ProductID {id}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Currency conversion failed: {str(e)}")
