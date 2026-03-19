@@ -13,3 +13,4 @@ cloudResources:
   collections:
     ..\postman\collections\Inventory API Tests: ee1f8173-8911-419c-91da-6350d473900a
     ..\postman\collections\Inventory API Tests Copy: b31e985c-a07b-408b-a07b-187405c0174a
+    ..\postman\collections\Inventory API Tests Copy 2: 67b5d7fa-046b-46ae-a672-fae6e648ac26
