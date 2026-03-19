@@ -1,7 +1,7 @@
 {
   "info": {
+    "_postman_id": "8d0531dd-b9d7-bd2b-c1c1-bc2a00000001",
     "name": "Inventory API Tests",
-    "_postman_id": "12345678-abcd-efgh-ijkl-123456789000",
     "description": "Postman tests for Inventory API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -10,40 +10,31 @@
       "name": "Home",
       "request": {
         "method": "GET",
+        "header": [],
         "url": {
           "raw": "{{base_url}}/",
           "host": ["{{base_url}}"],
           "path": [""]
         }
-      }
-    },
-    {
-      "name": "Get Single Product",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "{{base_url}}/getSingleProduct?id=1",
-          "host": ["{{base_url}}"],
-          "path": ["getSingleProduct"],
-          "query": [
-            {
-              "key": "id",
-              "value": "1"
-            }
-          ]
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});"
+            ]
+          }
         }
-      }
-    },
-    {
-      "name": "Get All",
-      "request": {
-        "method": "GET",
-        "url": {
-          "raw": "{{base_url}}/getAll",
-          "host": ["{{base_url}}"],
-          "path": ["getAll"]
-        }
-      }
+      ],
+      "response": []
     },
     {
       "name": "Add New Product",
@@ -57,23 +48,50 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"ProductID\": 20,\n  \"Name\": \"SSD\",\n  \"UnitPrice\": 89.99,\n  \"StockQuantity\": 7,\n  \"Description\": \"1TB SSD\"\n}"
+          "raw": "{\n  \"ProductID\": 20,\n  \"Name\": \"SSD\",\n  \"UnitPrice\": 89.99,\n  \"StockQuantity\": 7,\n  \"Description\": \"1TB SSD\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
         },
         "url": {
           "raw": "{{base_url}}/addNew",
           "host": ["{{base_url}}"],
           "path": ["addNew"]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Product added successfully\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.message).to.eql(\"Product added successfully\");",
+              "    pm.expect(data.product).to.have.property(\"ProductID\");",
+              "    pm.expect(data.product).to.have.property(\"Name\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
     },
     {
-      "name": "Delete One",
+      "name": "Get Single Product",
       "request": {
-        "method": "DELETE",
+        "method": "GET",
+        "header": [],
         "url": {
-          "raw": "{{base_url}}/deleteOne?id=20",
+          "raw": "{{base_url}}/getSingleProduct?id=20",
           "host": ["{{base_url}}"],
-          "path": ["deleteOne"],
+          "path": ["getSingleProduct"],
           "query": [
             {
               "key": "id",
@@ -81,12 +99,67 @@
             }
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Returned product has correct fields\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.have.property(\"ProductID\");",
+              "    pm.expect(data).to.have.property(\"Name\");",
+              "    pm.expect(data).to.have.property(\"UnitPrice\");",
+              "    pm.expect(data).to.have.property(\"StockQuantity\");",
+              "    pm.expect(data).to.have.property(\"Description\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Get All",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/getAll",
+          "host": ["{{base_url}}"],
+          "path": ["getAll"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
     },
     {
       "name": "Starts With",
       "request": {
         "method": "GET",
+        "header": [],
         "url": {
           "raw": "{{base_url}}/startsWith?letter=S",
           "host": ["{{base_url}}"],
@@ -98,12 +171,32 @@
             }
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response is an array\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
     },
     {
       "name": "Paginate",
       "request": {
         "method": "GET",
+        "header": [],
         "url": {
           "raw": "{{base_url}}/paginate?start=1&end=10",
           "host": ["{{base_url}}"],
@@ -119,24 +212,108 @@
             }
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Paginate returns array\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.be.an(\"array\");",
+              "    pm.expect(data.length).to.be.at.most(10);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
     },
     {
       "name": "Convert",
       "request": {
         "method": "GET",
+        "header": [],
         "url": {
-          "raw": "{{base_url}}/convert?id=1",
+          "raw": "{{base_url}}/convert?id=20",
           "host": ["{{base_url}}"],
           "path": ["convert"],
           "query": [
             {
               "key": "id",
-              "value": "1"
+              "value": "20"
             }
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Converted price fields exist\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data).to.have.property(\"PriceUSD\");",
+              "    pm.expect(data).to.have.property(\"PriceEUR\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Delete One",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/deleteOne?id=20",
+          "host": ["{{base_url}}"],
+          "path": ["deleteOne"],
+          "query": [
+            {
+              "key": "id",
+              "value": "20"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Delete message returned\", function () {",
+              "    const data = pm.response.json();",
+              "    pm.expect(data.message).to.include(\"deleted successfully\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
     }
   ]
 }
